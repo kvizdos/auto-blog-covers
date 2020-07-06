@@ -34,7 +34,7 @@ class SocialCard extends Route {
                     alignX: Jimp.HORIZONTAL_ALIGN_CENTER,
                     alignY: Jimp.VERTICAL_ALIGN_BOTTOM,
                     x: 0,
-                    y: -28,
+                    y: -20,
                     useSafeZone: 1
                 }], {
                     safeZones: [
