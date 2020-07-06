@@ -24,7 +24,7 @@ class SocialCard extends Route {
 
             if(!fs.existsSync(path.join(__dirname, 'cards', slug.split("/")[0] + ".png")) || forceRefresh) {
                 await this.Card.drawCard(path.join(__dirname, 'cards', slug.split("/")[0] + ".png"), [{
-                    text: imageCaption,
+                    text: imageCaption.replace(/#/gm, ""),
                     font: path.join(__dirname, 'fonts', 'OpenSans-Bold.fnt'),
                     useSafeZone: 0,
                     alignY: Jimp.VERTICAL_ALIGN_MIDDLE,
