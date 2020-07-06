@@ -29,7 +29,7 @@ class SocialCard extends Route {
                     useSafeZone: 0,
                     alignY: Jimp.VERTICAL_ALIGN_MIDDLE,
                 }, {
-                    text: `Read this article by ${author} in ${time}`,
+                    text: `Read this article by ${author} in ${time == 1 ? "1 minute" : time + " minutes"}`,
                     font: path.join(__dirname, 'fonts', 'OpenSans-SemiBold.fnt'),
                     alignX: Jimp.HORIZONTAL_ALIGN_CENTER,
                     alignY: Jimp.VERTICAL_ALIGN_BOTTOM,
