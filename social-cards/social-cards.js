@@ -2,11 +2,14 @@ const Route = require('../route');
 var Jimp = require("jimp");
 const fs = require('fs');
 const path = require('path');
+const cardClass = require('./card');
 
 class SocialCard extends Route {
     constructor() {
         super();
         this.registerRoutes();
+
+        this.Card = new cardClass("Main card", 1200, 630, 50);
     }
 
     registerRoutes() {
@@ -19,28 +22,28 @@ class SocialCard extends Route {
 
             if([imageCaption, author, time, slug].filter(Boolean).length != 4) return res.status(400).send("invalid params")
 
-            let loadedImage;
-
             if(!fs.existsSync(path.join(__dirname, 'cards', slug.split("/")[0] + ".png")) || forceRefresh) {
-                await Jimp.read(path.join(__dirname, 'cards', 'raw', 'card1.png'))
-                .then(function (image) {
-                    loadedImage = image;
-                    return Jimp.loadFont(Jimp.FONT_SANS_128_WHITE);
+                await this.Card.drawCard(path.join(__dirname, 'cards', slug.split("/")[0] + ".png"), [{
+                    text: imageCaption,
+                    font: path.join(__dirname, 'fonts', 'OpenSans-Bold.fnt'),
+                    useSafeZone: 0,
+                    alignY: Jimp.VERTICAL_ALIGN_MIDDLE,
+                }, {
+                    text: `Read this article by ${author} in ${time}`,
+                    font: path.join(__dirname, 'fonts', 'OpenSans-SemiBold.fnt'),
+                    alignX: Jimp.HORIZONTAL_ALIGN_CENTER,
+                    alignY: Jimp.VERTICAL_ALIGN_BOTTOM,
+                    x: 0,
+                    y: -10,
+                    useSafeZone: 1
+                }], {
+                    safeZones: [
+                        {preservePadding: true, x: 1200, y: 480},
+                        {preservePadding: false, x: 1200, y: 630}
+                    ]
                 })
-                .then(function (font) {
-                    loadedImage.print(font, 100, 100, {text: imageCaption, alignmentX: Jimp.HORIZONTAL_ALIGN_LEFT}, 1750, 900)
-                    return loadedImage;
-                })
-                .then(async function () {
-                    return await Jimp.loadFont(Jimp.FONT_SANS_32_BLACK);
-                })
-                .then(async (font) => {
-                    await loadedImage.print(font, 650, 940, time).print(font, 650, 1010, author).writeAsync(path.join(__dirname, 'cards', slug.split("/")[0] + ".png"));
-                    res.sendFile(path.join(__dirname, 'cards', slug.split("/")[0] + ".png"))
-                })
-                .catch(function (err) {
-                    console.error(err);
-                });
+
+                res.sendFile(path.join(__dirname, 'cards', slug.split("/")[0] + ".png"))
             } else {
                 res.sendFile(path.join(__dirname, 'cards', slug.split("/")[0] + ".png"))
             }
